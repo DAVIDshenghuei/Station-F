@@ -17,20 +17,163 @@ def load_custom_css():
     /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     
-    /* Global Styles */
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+    /* Force black background on all Streamlit containers */
+    .stApp {
+        background: #000000 !important;
     }
     
-    /* Main Container - Zeabur Pure Black */
+    [data-testid="stAppViewContainer"] {
+        background: #000000 !important;
+    }
+    
+    header[data-testid="stHeader"] {
+        background: #000000 !important;
+    }
+    
     .main {
         background: #000000 !important;
-        color: #ffffff;
     }
     
+    /* Colorful Nebula Background - Layer 1 */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            /* Blue nebula (left side) */
+            radial-gradient(ellipse at 15% 30%, rgba(0, 150, 255, 0.3), transparent 50%),
+            radial-gradient(ellipse at 25% 50%, rgba(0, 200, 255, 0.2), transparent 45%),
+            
+            /* Purple nebula (center-top) */
+            radial-gradient(ellipse at 50% 20%, rgba(150, 50, 200, 0.25), transparent 40%),
+            radial-gradient(ellipse at 45% 35%, rgba(200, 100, 255, 0.2), transparent 35%),
+            
+            /* Pink nebula (right side) */
+            radial-gradient(ellipse at 75% 40%, rgba(255, 100, 150, 0.3), transparent 45%),
+            radial-gradient(ellipse at 85% 25%, rgba(255, 150, 200, 0.25), transparent 40%),
+            
+            /* Orange/Yellow nebula (center-right) */
+            radial-gradient(ellipse at 65% 60%, rgba(255, 180, 100, 0.2), transparent 35%),
+            radial-gradient(ellipse at 55% 70%, rgba(255, 200, 150, 0.15), transparent 40%);
+        background-size: 100% 100%;
+        animation: nebula 120s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Stars Layer - Layer 2 */
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            /* Large bright stars with glow */
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 60% 15%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 10% 80%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 1), transparent 2px),
+            
+            /* Medium stars */
+            radial-gradient(circle at 15% 40%, rgba(255, 255, 255, 0.8), transparent 1px),
+            radial-gradient(circle at 35% 60%, rgba(255, 255, 255, 0.8), transparent 1px),
+            radial-gradient(circle at 55% 25%, rgba(255, 255, 255, 0.8), transparent 1px),
+            radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.8), transparent 1px),
+            radial-gradient(circle at 25% 90%, rgba(255, 255, 255, 0.8), transparent 1px),
+            radial-gradient(circle at 85% 35%, rgba(255, 255, 255, 0.8), transparent 1px),
+            
+            /* Small distant stars - more density */
+            radial-gradient(circle at 5% 20%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 30% 45%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 50% 65%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 95% 55%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 12% 75%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 42% 88%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 68% 42%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 88% 78%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 22% 15%, rgba(255, 255, 255, 0.6), transparent 1px),
+            radial-gradient(circle at 48% 32%, rgba(255, 255, 255, 0.5), transparent 1px),
+            radial-gradient(circle at 78% 62%, rgba(255, 255, 255, 0.5), transparent 1px),
+            radial-gradient(circle at 33% 52%, rgba(255, 255, 255, 0.5), transparent 1px),
+            radial-gradient(circle at 62% 82%, rgba(255, 255, 255, 0.5), transparent 1px);
+        opacity: 0.9;
+        pointer-events: none;
+        z-index: 3;
+    }
+    
+    /* Twinkling stars layer - Layer 3 */
+    .stApp::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 18% 32%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 52% 68%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 38% 78%, rgba(255, 255, 255, 1), transparent 2px),
+            radial-gradient(circle at 72% 48%, rgba(255, 255, 255, 1), transparent 2px);
+        animation: twinkle 3s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 4;
+    }
+    
+    /* Milky Way glow effect */
+    [data-testid="stAppViewContainer"]::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            135deg,
+            rgba(100, 150, 255, 0.1) 0%,
+            rgba(150, 100, 200, 0.15) 25%,
+            rgba(200, 100, 150, 0.15) 50%,
+            rgba(255, 150, 100, 0.1) 75%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 2;
+    }
+    
+    @keyframes nebula {
+        0%, 100% { 
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+        50% { 
+            transform: scale(1.1) rotate(5deg);
+            opacity: 0.8;
+        }
+    }
+    
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+    }
+    
+    /* Ensure content is above starfield */
     .block-container {
-        max-width: 1200px !important;
-        padding: 4rem 2rem !important;
+        position: relative;
+        z-index: 999 !important;
+    }
+    
+    /* Global text color */
+    body, .stApp, .main {
+        font-family: 'Inter', sans-serif !important;
+        color: #ffffff !important;
     }
     
     /* Hero Section */
@@ -84,15 +227,18 @@ def load_custom_css():
         50% { background-position: 100% 50%; }
     }
     
-    /* Cards - Zeabur Pure Black */
+    /* Cards - Floating in Space */
     .episode-card {
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
+        background: rgba(10, 10, 10, 0.3);
+        backdrop-filter: blur(20px);
+        border: none;
         border-radius: 24px;
         padding: 2.5rem;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        z-index: 2;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
     
     .episode-card::before {
@@ -102,16 +248,16 @@ def load_custom_css():
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), transparent);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(255, 100, 150, 0.1));
         opacity: 0;
         transition: opacity 0.4s ease;
         pointer-events: none;
     }
     
     .episode-card:hover {
-        border-color: #2a2a2a;
-        transform: translateY(-8px);
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+        transform: translateY(-12px);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2), 0 0 80px rgba(255, 100, 150, 0.1);
+        background: rgba(10, 10, 10, 0.4);
     }
     
     .episode-card:hover::before {
@@ -174,7 +320,8 @@ def load_custom_css():
     /* Input Fields - Zeabur Pure Black */
     .stTextInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background: #0a0a0a !important;
+        background: rgba(10, 10, 10, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
         border: 1px solid #1a1a1a !important;
         border-radius: 16px !important;
         color: #ffffff !important;
@@ -349,26 +496,30 @@ def load_custom_css():
         color: #fff !important;
     }
     
-    /* Stats Badge - Zeabur Pure Black */
+    /* Stats Badge - Floating in Space */
     .stat-badge {
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
+        background: rgba(10, 10, 10, 0.4);
+        backdrop-filter: blur(15px);
+        border: none;
         border-radius: 12px;
         padding: 0.7rem 1.4rem;
         display: inline-block;
         font-family: 'Inter', sans-serif;
         font-size: 0.9rem;
         font-weight: 600;
-        color: #888;
+        color: #aaa;
         margin: 0.25rem;
         transition: all 0.4s ease;
+        z-index: 2;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
     
     .stat-badge:hover {
-        border-color: #2a2a2a;
-        background: #0f0f0f;
-        color: #aaa;
-        transform: translateY(-2px);
+        background: rgba(102, 126, 234, 0.2);
+        color: #ddd;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
     
     /* Feature Icon */
@@ -430,16 +581,16 @@ def main():
     # Load custom CSS
     load_custom_css()
     
-    # Hero Section - Zeabur Style
+    # Hero Section - Zeabur Style with Starfield
     st.markdown(
         """
-        <div style='text-align: center; padding: 6rem 0 4rem 0; max-width: 900px; margin: 0 auto;'>
+        <div style='text-align: center; padding: 6rem 0 4rem 0; max-width: 900px; margin: 0 auto; position: relative; z-index: 2;'>
             <h1 class='hero-title' style='font-size: 4.5rem; line-height: 1; margin-bottom: 2rem;'>
                 Your AI Podcast<br/>Platform
             </h1>
-            <p class='subtitle' style='font-size: 1.4rem; color: #666; line-height: 1.8; margin-bottom: 3rem;'>
+            <p class='subtitle' style='font-size: 1.4rem; color: #888; line-height: 1.8; margin-bottom: 3rem;'>
                 Stream and discover podcast episodes powered by<br/>
-                <span class='animated-text' style='color: #fff; font-weight: 500;'>AI technology</span>
+                <span style='color: #fff; font-weight: 600; font-size: 1.5rem;'>Autopod</span>
             </p>
         </div>
         """,
@@ -480,13 +631,13 @@ def main():
             if not episodes:
                 st.markdown(
                     """
-                    <div style='text-align: center; padding: 8rem 3rem; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 28px;'>
-                        <div style='font-size: 5rem; margin-bottom: 2rem; opacity: 0.5;'>🎙️</div>
+                    <div style='text-align: center; padding: 8rem 3rem; background: transparent; position: relative; z-index: 2;'>
+                        <div style='font-size: 5rem; margin-bottom: 2rem; opacity: 0.7;'>🎙️</div>
                         <h3 style='color: #fff; font-weight: 700; font-size: 2rem; margin-bottom: 1rem; letter-spacing: -1px;'>No Episodes Yet</h3>
-                        <p style='color: #555; font-size: 1.15rem; line-height: 1.6; margin-bottom: 3rem;'>
-                            Upload your first podcast episode<br/>from the sidebar to get started
+                        <p style='color: #888; font-size: 1.15rem; line-height: 1.6; margin-bottom: 3rem;'>
+                            Use the API to upload your first podcast episode
                         </p>
-                        <div style='color: #888; font-size: 0.95rem;'>← Start by uploading files</div>
+                        <div style='color: #aaa; font-size: 0.95rem;'>POST /api/episodes</div>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -560,16 +711,16 @@ def main():
     except requests.exceptions.ConnectionError:
         st.markdown(
             """
-            <div style='text-align: center; padding: 6rem 3rem; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 28px;'>
-                <div style='font-size: 5rem; margin-bottom: 2rem; opacity: 0.5;'>⚠️</div>
+            <div style='text-align: center; padding: 6rem 3rem; background: transparent; position: relative; z-index: 2;'>
+                <div style='font-size: 5rem; margin-bottom: 2rem; opacity: 0.7;'>⚠️</div>
                 <h3 style='color: #f87171; font-weight: 700; font-size: 2rem; margin-bottom: 1.5rem; letter-spacing: -1px;'>Connection Error</h3>
-                <p style='color: #555; font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;'>
+                <p style='color: #888; font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;'>
                     Cannot connect to backend server
                 </p>
-                <code style='background: #000; padding: 0.8rem 1.5rem; border-radius: 12px; color: #888; font-size: 1rem; border: 1px solid #1a1a1a;'>
+                <code style='background: rgba(0, 0, 0, 0.4); padding: 0.8rem 1.5rem; border-radius: 12px; color: #aaa; font-size: 1rem; border: none;'>
                     http://localhost:8000
                 </code>
-                <p style='color: #666; font-size: 0.95rem; margin-top: 2rem;'>
+                <p style='color: #999; font-size: 0.95rem; margin-top: 2rem;'>
                     Please ensure FastAPI service is running
                 </p>
             </div>
@@ -608,4 +759,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
