@@ -176,6 +176,35 @@ def load_custom_css():
         color: #ffffff !important;
     }
     
+    /* Hide empty Streamlit containers and fix layout issues */
+    div[data-testid="column"] > div:empty {
+        display: none !important;
+    }
+    
+    /* Hide any stray numbers or text */
+    .stMarkdown p:empty,
+    .stMarkdown div:empty {
+        display: none !important;
+    }
+    
+    /* Clean up horizontal blocks */
+    div[data-testid="stHorizontalBlock"] {
+        gap: 0 !important;
+        background: transparent !important;
+    }
+    
+    /* Remove default margins from columns */
+    div[data-testid="column"] {
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    
+    /* Hide Streamlit's default number indicators */
+    .stNumberInput,
+    .row-widget.stNumberInput {
+        display: none !important;
+    }
+    
     /* Hero Section */
     .hero-title {
         font-family: 'Inter', sans-serif;
@@ -413,19 +442,30 @@ def load_custom_css():
         color: #fbbf24 !important;
     }
     
-    /* Audio Player - Zeabur Pure Black */
+    /* Audio Player - Floating Style */
     audio {
-        width: 100%;
-        height: 60px;
-        border-radius: 16px;
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
-        transition: all 0.4s ease;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 54px !important;
+        border-radius: 16px !important;
+        background: rgba(10, 10, 10, 0.6) !important;
+        border: none !important;
+        backdrop-filter: blur(15px) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.4s ease !important;
+        margin: 0 !important;
     }
     
     audio:hover {
-        border-color: #2a2a2a;
-        background: #0f0f0f;
+        background: rgba(10, 10, 10, 0.8) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    /* Hide any Streamlit audio container styling */
+    [data-testid="stAudio"] {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
     }
     
     /* Image - Zeabur Style */
@@ -600,26 +640,16 @@ def main():
     # Main Area - Episode Library (Zeabur Style)
     st.markdown("<br><br><br>", unsafe_allow_html=True)
     
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        st.markdown('<h2 style="font-size: 3rem; font-weight: 800; color: #fff; letter-spacing: -2px; margin-bottom: 1rem;">Episode Library</h2>', unsafe_allow_html=True)
-        st.markdown('<p style="font-size: 1.2rem; color: #666; font-weight: 400;">All your podcast episodes in one place</p>', unsafe_allow_html=True)
-    
-    with col2:
-        # Stats
-        try:
-            response = requests.get(f"{API_BASE_URL}/api/episodes", timeout=5)
-            if response.status_code == 200:
-                episode_count = len(response.json())
-                st.markdown(
-                    f'<div class="stat-badge" style="float: right; margin-top: 1rem;">{episode_count} Episodes</div>',
-                    unsafe_allow_html=True
-                )
-        except:
-            pass
-    
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    # Header section without columns to avoid layout issues
+    st.markdown(
+        """
+        <div style='margin-bottom: 3rem;'>
+            <h2 style='font-size: 3rem; font-weight: 800; color: #fff; letter-spacing: -2px; margin-bottom: 1rem;'>Episode Library</h2>
+            <p style='font-size: 1.2rem; color: #666; font-weight: 400;'>All your podcast episodes in one place</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
     try:
         # Fetch all episodes
@@ -643,68 +673,76 @@ def main():
                     unsafe_allow_html=True
                 )
             else:
-                # Display each episode (Zeabur Pure Black Card)
+                # Display each episode (Pure HTML Layout - No Streamlit Columns)
                 for idx, episode in enumerate(episodes):
-                    # Episode card wrapper
-                    st.markdown('<div class="episode-card">', unsafe_allow_html=True)
+                    # Format date
+                    try:
+                        created_at = datetime.fromisoformat(episode['created_at'])
+                        formatted_date = created_at.strftime("%B %d, %Y • %H:%M")
+                    except:
+                        formatted_date = episode['created_at']
                     
-                    col1, col2 = st.columns([1, 2.5])
+                    # Audio URL
+                    audio_url = f"{API_BASE_URL}{episode['audio_url']}"
+                    image_url = f"{API_BASE_URL}{episode['image_url']}"
                     
-                    with col1:
-                        # Display cover
-                        image_url = f"{API_BASE_URL}{episode['image_url']}"
-                        st.image(image_url, use_container_width=True)
+                    # Complete episode card in pure HTML
+                    st.markdown(
+                        f"""
+                        <div class="episode-card">
+                            <div style="display: flex; gap: 2.5rem; align-items: flex-start;">
+                                <!-- Cover Image -->
+                                <div style="flex: 0 0 300px;">
+                                    <img src="{image_url}" style="width: 100%; height: auto; border-radius: 20px; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8); border: 1px solid #1a1a1a;">
+                                </div>
+                                
+                                <!-- Content -->
+                                <div style="flex: 1;">
+                                    <!-- Badges -->
+                                    <div style="margin-bottom: 1rem;">
+                                        <span class="stat-badge" style="margin-right: 0.5rem;">Episode #{len(episodes) - idx}</span>
+                                        <span class="stat-badge">ID: {episode["id"]}</span>
+                                    </div>
+                                    
+                                    <!-- Title -->
+                                    <h3 style="font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; letter-spacing: -0.5px;">{episode["title"]}</h3>
+                                    
+                                    <!-- Date -->
+                                    <p style="color: #555; font-size: 0.9rem; margin-bottom: 1.5rem;">{formatted_date}</p>
+                                    
+                                    <!-- Description -->
+                                    <p style="color: #888; font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">{episode["description"]}</p>
+                                    
+                                    <!-- Audio Player Placeholder -->
+                                    <div style="margin-bottom: 1.5rem;" data-audio-url="{audio_url}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <br><br>
+                        """,
+                        unsafe_allow_html=True
+                    )
                     
-                    with col2:
-                        # Episode badges
-                        st.markdown(
-                            f'<div style="margin-bottom: 1rem;">'
-                            f'<span class="stat-badge" style="margin-right: 0.5rem;">Episode #{len(episodes) - idx}</span>'
-                            f'<span class="stat-badge">ID: {episode["id"]}</span>'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
-                        
-                        # Title
-                        st.markdown(f'<h3 style="font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; letter-spacing: -0.5px;">{episode["title"]}</h3>', unsafe_allow_html=True)
-                        
-                        # Format date
-                        try:
-                            created_at = datetime.fromisoformat(episode['created_at'])
-                            formatted_date = created_at.strftime("%B %d, %Y • %H:%M")
-                        except:
-                            formatted_date = episode['created_at']
-                        
-                        st.markdown(
-                            f'<p style="color: #555; font-size: 0.9rem; margin-bottom: 1.5rem;">{formatted_date}</p>',
-                            unsafe_allow_html=True
-                        )
-                        
-                        # Description
-                        st.markdown(f'<p style="color: #888; font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">{episode["description"]}</p>', unsafe_allow_html=True)
-                        
-                        # Audio player
-                        audio_url = f"{API_BASE_URL}{episode['audio_url']}"
-                        st.audio(audio_url)
-                        
-                        # Download button
-                        st.markdown(
-                            f"""
-                            <a href="{API_BASE_URL}{episode["audio_url"]}" download 
-                               style="display: inline-block; margin-top: 1.5rem; padding: 0.8rem 2rem; 
-                               background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 14px; 
-                               color: #aaa; text-decoration: none; font-weight: 600; font-size: 0.95rem;
-                               transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);"
-                               onmouseover="this.style.borderColor='#2a2a2a'; this.style.background='#0f0f0f'; this.style.transform='translateY(-2px)';"
-                               onmouseout="this.style.borderColor='#1a1a1a'; this.style.background='#0a0a0a'; this.style.transform='translateY(0)';">
-                                ⬇️ Download Audio
-                            </a>
-                            """,
-                            unsafe_allow_html=True
-                        )
+                    # Audio player (using Streamlit component, but placed after HTML)
+                    st.audio(audio_url)
                     
-                    st.markdown("</div>", unsafe_allow_html=True)
-                    st.markdown("<br><br>", unsafe_allow_html=True)
+                    # Download button
+                    st.markdown(
+                        f"""
+                        <a href="{audio_url}" download 
+                           style="display: inline-block; margin: -3rem 0 3rem 0; padding: 0.8rem 2rem; 
+                           background: rgba(10, 10, 10, 0.6); border: none; border-radius: 14px; 
+                           color: #aaa; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+                           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(10px);
+                           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);"
+                           onmouseover="this.style.background='rgba(102, 126, 234, 0.3)'; this.style.color='#ddd'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)';"
+                           onmouseout="this.style.background='rgba(10, 10, 10, 0.6)'; this.style.color='#aaa'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.2)';">
+                            ⬇️ Download Audio
+                        </a>
+                        <br><br><br>
+                        """,
+                        unsafe_allow_html=True
+                    )
         else:
             st.error("❌ Failed to load episode library")
     
