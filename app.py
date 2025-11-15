@@ -218,26 +218,20 @@ def load_custom_css():
         font-size: 0.95rem !important;
     }
     
-    /* Sidebar - Zeabur Pure Black */
+    /* Hide Sidebar */
     [data-testid="stSidebar"] {
-        background: #000000 !important;
-        border-right: 1px solid #1a1a1a !important;
+        display: none !important;
     }
     
-    [data-testid="stSidebar"] .block-container {
-        padding: 2rem 1.5rem !important;
+    [data-testid="collapsedControl"] {
+        display: none !important;
     }
     
-    [data-testid="stSidebar"] h1, 
-    [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] h3 {
-        color: #ffffff !important;
-        font-weight: 700 !important;
-    }
-    
-    [data-testid="stSidebar"] h3 {
-        font-size: 1.3rem !important;
-        letter-spacing: -0.5px !important;
+    /* Adjust main content width */
+    .main .block-container {
+        max-width: 1400px !important;
+        padding-left: 4rem !important;
+        padding-right: 4rem !important;
     }
     
     /* Divider - Zeabur Pure Black */
@@ -430,7 +424,7 @@ def main():
         page_title="AI Podcast Platform",
         page_icon="🎙️",
         layout="wide",
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="collapsed"
     )
     
     # Load custom CSS
@@ -444,115 +438,13 @@ def main():
                 Your AI Podcast<br/>Platform
             </h1>
             <p class='subtitle' style='font-size: 1.4rem; color: #666; line-height: 1.8; margin-bottom: 3rem;'>
-                Deploy and manage your podcast episodes with<br/>
-                <span class='animated-text' style='color: #fff; font-weight: 500;'>AI-powered technology</span>
+                Stream and discover podcast episodes powered by<br/>
+                <span class='animated-text' style='color: #fff; font-weight: 500;'>AI technology</span>
             </p>
         </div>
         """,
         unsafe_allow_html=True
     )
-    
-    # Sidebar - Upload New Episode (Zeabur Style)
-    with st.sidebar:
-        st.markdown('<h3 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">📤 Upload Episode</h3>', unsafe_allow_html=True)
-        st.markdown('<p class="text-muted" style="margin-bottom: 2.5rem;">Create and publish in seconds</p>', unsafe_allow_html=True)
-        
-        # File Upload Section
-        st.markdown('<p style="color: #666; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem;">Audio File</p>', unsafe_allow_html=True)
-        audio_file = st.file_uploader(
-            "Choose audio file",
-            type=["mp3", "wav", "m4a"],
-            help="MP3, WAV, M4A • Max 50MB",
-            label_visibility="collapsed",
-            key="audio"
-        )
-        
-        st.markdown('<p style="color: #666; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 2rem; margin-bottom: 0.8rem;">Cover Image</p>', unsafe_allow_html=True)
-        image_file = st.file_uploader(
-            "Choose cover image",
-            type=["jpg", "jpeg", "png"],
-            help="JPG, PNG • Max 10MB",
-            label_visibility="collapsed",
-            key="image"
-        )
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        
-        # Metadata Input
-        st.markdown('<p style="color: #666; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem;">Episode Details</p>', unsafe_allow_html=True)
-        title = st.text_input(
-            "Title",
-            placeholder="Episode title",
-            help="Give your episode a catchy title",
-            label_visibility="collapsed"
-        )
-        description = st.text_area(
-            "Description",
-            placeholder="Episode description",
-            height=130,
-            help="Describe your episode",
-            label_visibility="collapsed"
-        )
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        
-        # Preview Section
-        if image_file or audio_file:
-            st.markdown('<p style="color: #666; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Preview</p>', unsafe_allow_html=True)
-            
-            if image_file:
-                st.image(image_file, use_container_width=True)
-            
-            if audio_file:
-                st.markdown('<br>', unsafe_allow_html=True)
-                st.audio(audio_file)
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        
-        # Submit Button (Zeabur Style)
-        submit_button = st.button(
-            "🚀 Publish Episode",
-            use_container_width=True,
-            type="primary"
-        )
-        
-        if submit_button:
-            if not all([audio_file, image_file, title, description]):
-                st.error("❌ Please fill all fields and upload files!")
-            else:
-                with st.spinner("🔄 Uploading to cloud..."):
-                    try:
-                        # Prepare multipart/form-data
-                        files = {
-                            "audio_file": (audio_file.name, audio_file.getvalue(), audio_file.type),
-                            "image_file": (image_file.name, image_file.getvalue(), image_file.type)
-                        }
-                        data = {
-                            "title": title,
-                            "description": description
-                        }
-                        
-                        # Send POST request to backend
-                        response = requests.post(
-                            f"{API_BASE_URL}/api/episodes",
-                            files=files,
-                            data=data,
-                            timeout=60
-                        )
-                        
-                        if response.status_code == 200:
-                            st.success("✅ Episode published successfully!")
-                            st.balloons()
-                            # Refresh the list
-                            st.rerun()
-                        else:
-                            error_detail = response.json().get("detail", "Unknown error")
-                            st.error(f"❌ Upload failed: {error_detail}")
-                    
-                    except requests.exceptions.ConnectionError:
-                        st.error("❌ Cannot connect to backend server. Please ensure FastAPI service is running.")
-                    except Exception as e:
-                        st.error(f"❌ Error occurred: {str(e)}")
     
     # Main Area - Episode Library (Zeabur Style)
     st.markdown("<br><br><br>", unsafe_allow_html=True)
